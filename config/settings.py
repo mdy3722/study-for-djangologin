@@ -11,11 +11,11 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
-import environ
+import os
+from dotenv import load_dotenv
 
-# 환경 변수 읽기
-env = environ.Env()
-environ.Env.read_env()  # .env 파일 읽기
+load_dotenv()
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env('SECRET_KEY')
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -151,8 +151,8 @@ EMAIL_HOST = 'smtp.gmail.com'  # SMTP 서버 주소
 EMAIL_PORT = 587  # SMTP 포트 (보통 587 또는 465)
 EMAIL_USE_TLS = True  # TLS 사용 여부 (보통 True)
 EMAIL_USE_SSL = False  # SSL 사용 여부 (보통 False)
-EMAIL_HOST_USER = env('EMAIL_HOST_USER')  # 이메일 주소
-EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')  # 앱 비밀번호
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')  # 이메일 주소
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')  # 앱 비밀번호
 
 # 발신 이메일 주소
 DEFAULT_FROM_EMAIL = 'mdy3722@gmail.com'

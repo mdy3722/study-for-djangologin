@@ -1,7 +1,7 @@
 # accounts/models.py
 
 from django.db import models
-from django.contrib.auth.models import AbstractUser, Group, BaseUserManager, Permission
+from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.utils import timezone
 
 """
@@ -41,8 +41,8 @@ class CustomUser(AbstractUser):
     username = None
     email = models.EmailField(unique=True)
     nickname = models.CharField(max_length=30, unique=True, default='default_nickname')
-    groups = models.ManyToManyField(Group, related_name='customuser_set', blank=True)
-    user_permissions = models.ManyToManyField(Permission, related_name='customuser_set', blank=True)
+    # groups = models.ManyToManyField(Group, related_name='customuser_set', blank=True)
+    # user_permissions = models.ManyToManyField(Permission, related_name='customuser_set', blank=True)
     USERNAME_FIELD = 'email'    # 우리 앱에서의 사용자 조회 시 사용되는 필드는 이메일 필드, 즉 이메일 필드를 사용자명으로 사용
     REQUIRED_FIELDS = ['nickname']
 
