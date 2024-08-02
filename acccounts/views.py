@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from django.utils import timezone
 from datetime import timedelta
 from django.core.mail import send_mail
-from .models import EmailVerification, CustomUser
+from .models import EmailVerification, User
 from .serializers import EmailVerificationSendSerializer, EmailVerificationCheckSerializer, UserRegistrationSerializer, CustomAuthTokenSerializer  
 import string
 import random
@@ -89,9 +89,9 @@ def login(request):
         return Response({'error': '비밀번호를 입력해 주세요'}, status=status.HTTP_400_BAD_REQUEST)
 
     try:
-        user = CustomUser.objects.get(email=email)
-    except CustomUser.DoesNotExist:
-        return Response({'error': '이메일 또는 비밀번호가 잘못되었습니다.'}, status=status.HTTP_401_UNAUTHORIZED)
+        user = User.objects.get(email=email)
+    except User.DoesNotExist:
+        return Response({'error': ''}, status=status.HTTP_401_UNAUTHORIZED)
 
     user = authenticate(email=email, password=password)
     
@@ -134,8 +134,8 @@ def reset_password(request):
         return Response({'error': 'Email is required'}, status=status.HTTP_400_BAD_REQUEST)
     
     try:
-        user = CustomUser.objects.get(email=email)
-    except CustomUser.DoesNotExist:
+        user = User.objects.get(email=email)
+    except User.DoesNotExist:
         return Response({'error': 'User with this email does not exist'}, status=status.HTTP_404_NOT_FOUND)
 
     temporary_password = generate_temporary_password()
