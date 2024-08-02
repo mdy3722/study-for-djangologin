@@ -82,19 +82,33 @@ def register_user(request):
 def login(request):
     email = request.data.get('email')
     password = request.data.get('password')
+    
+    if not email:
+        return Response({'error': '이메일을 입력해 주세요'}, status=status.HTTP_400_BAD_REQUEST)
+    if not password:
+        return Response({'error': '비밀번호를 입력해 주세요'}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        user = CustomUser.objects.get(email=email)
+    except CustomUser.DoesNotExist:
+        return Response({'error': '이메일 또는 비밀번호가 잘못되었습니다.'}, status=status.HTTP_401_UNAUTHORIZED)
+
     user = authenticate(email=email, password=password)
-    if user:
-        refresh = RefreshToken.for_user(user)
-        return Response({
-            'access_token': str(refresh.access_token),
-            'refresh_token': str(refresh),
-        }, status=status.HTTP_200_OK)
-    return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+    
+    if user is None:
+        return Response({'error': '이메일 또는 비밀번호가 잘못되었습니다.'}, status=status.HTTP_401_UNAUTHORIZED)
+
+    refresh_token = RefreshToken.for_user(user)
+    return Response({
+        'access_token': str(refresh_token.access_token),
+        'refresh_token': str(refresh_token),
+    }, status=status.HTTP_200_OK)
+
 
 # 토큰 갱신 -> refresh를 request로 보내면 access 토큰을 새로 발급해줌
 @api_view(['POST'])
 def token_refresh(request):
-    refresh_token = request.data.get('refresh')
+    refresh_token = request.data.get('refresh_token')
     try:
         refresh = RefreshToken(refresh_token)
         new_access_token = str(refresh.access_token)
@@ -105,10 +119,10 @@ def token_refresh(request):
 @api_view(['POST'])
 def logout(request):
     try:
-        refresh_token = request.data.get('refresh')
+        refresh_token = request.data.get('refresh_token')
         token = RefreshToken(refresh_token)
         token.blacklist()
-        return Response({'message': 'Logout successful'}, status=status.HTTP_205_RESET_CONTENT)
+        return Response({'message': 'Logout successful'}, status=status.HTTP_200_OK)
     except Exception as e:
         return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 

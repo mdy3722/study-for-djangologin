@@ -21,7 +21,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         """
         비밀번호가 8~12 자리 영소문자, 숫자, 특수문자 조합으로 이루어졌는지 검증합니다.
         """
-        if not re.match(r'^(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,12}$', value):
+        if not re.match(r'^(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[a-z\d@$!%*?&]{8,12}$', value):
             raise serializers.ValidationError(
                 "비밀번호는 8~12 자리의 영소문자, 숫자, 특수문자 조합이어야 합니다."
             )
